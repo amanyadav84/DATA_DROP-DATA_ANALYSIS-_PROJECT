@@ -162,9 +162,8 @@ Once the server is running, visit:
 | Excel     | `.xlsx`   | 500 MB     |
 | Parquet   | `.parquet`| 5 GB       |
 
-## License
 
-This project is licensed under the MIT License.
+
 
 ## Contributing
 
