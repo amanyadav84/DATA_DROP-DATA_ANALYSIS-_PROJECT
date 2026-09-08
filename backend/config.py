@@ -26,7 +26,7 @@ _load_dotenv()
 
 
 def get_api_key() -> str:
-    return os.environ.get("AI_STUDIO_API_KEY", "")
+    return os.environ.get("AI_STUDIO_API_KEY", "")#paste your api
 
 
 def get_api_base_url() -> str:
