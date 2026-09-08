@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Drop — Enterprise Analytics Platform</title>
+  <meta name="description" content="Professional data analysis, visualization, and AI-powered insights platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <!-- ===================== Topbar ===================== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="sidebarToggle" class="icon-btn nav-toggle" title="Toggle Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+            <rect x="2" y="2" width="10" height="10" rx="2" fill="#7c9cff"/>
+            <rect x="16" y="2" width="10" height="6" rx="2" fill="#56d9a1"/>
+            <rect x="2" y="16" width="6" height="10" rx="2" fill="#f0a35e"/>
+            <rect x="12" y="16" width="14" height="10" rx="2" fill="#e06c9c"/>
+          </svg>
+        </div>
+        <span class="brand-name">Data Drop</span>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <button id="globalSearchBtn" class="global-search-trigger" title="Search (Ctrl+K)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Search datasets, columns, charts...</span>
+        <kbd>Ctrl+K</kbd>
+      </button>
+    </div>
+
+    <div class="topbar-right">
+      <button id="shareBtn" class="btn btn-ghost btn-sm" title="Copy shareable link" hidden>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        <span>Share</span>
+      </button>
+      <button id="newFileBtn" class="btn btn-ghost btn-sm" title="New File">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span>New</span>
+      </button>
+      <button id="themeToggle" class="icon-btn" title="Toggle theme">
+        <svg id="themeIconDark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="themeIconLight" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" hidden><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== App Shell ===================== -->
+  <div class="app-shell">
+    <!-- ===================== Navigation Sidebar ===================== -->
+    <nav class="nav-sidebar" id="navSidebar">
+      <div class="nav-sidebar-inner">
+        <div class="nav-section">
+          <div class="nav-section-label">General</div>
+          <button class="nav-item active" data-view="home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" data-view="projects">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Projects</span>
+          </button>
+          <button class="nav-item" data-view="workspace">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            <span>Workspace</span>
+          </button>
+          <button class="nav-item" data-view="datasets">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            <span>Datasets</span>
+          </button>
+          <button class="nav-item" data-view="merge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            <span>Merge Center</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">Analysis</div>
+          <button class="nav-item" data-view="preview" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            <span>Data Preview</span>
+          </button>
+          <button class="nav-item" data-view="charts" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Charts</span>
+          </button>
+          <button class="nav-item" data-view="clean" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span>Cleaning</span>
+          </button>
+          <button class="nav-item" data-view="report" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Quality Report</span>
+          </button>
+          <button class="nav-item" data-view="correlation" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="3" height="3"/><rect x="14" y="14" width="3" height="3"/></svg>
+            <span>Correlation</span>
+          </button>
+          <button class="nav-item" data-view="distribution" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M5 20V10M9 20V4M13 20V8M17 20V6M21 20V12"/></svg>
+            <span>Distribution</span>
+          </button>
+          <button class="nav-item" data-view="stats" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Statistics</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">AI & Tools</div>
+          <button class="nav-item" data-view="ai-insights" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>AI Insights</span>
+          </button>
+          <button class="nav-item" data-view="ask-data" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Ask Data</span>
+          </button>
+          <button class="nav-item" data-view="features" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>Feature Engineering</span>
+          </button>
+          <button class="nav-item" data-view="tools" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            <span>Tools</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">Output</div>
+          <button class="nav-item" data-view="dashboard" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-view="eda-report" data-requires-session>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>EDA Report</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===================== Main Content ===================== -->
+    <main class="main-content" id="mainContent">
+
+      <!-- ========== HOME VIEW ========== -->
+      <div class="view active" id="view-home">
+        <div class="home-container">
+          <div class="home-header">
+            <h1 class="home-title">Welcome to <span class="grad">Data Drop</span></h1>
+            <p class="home-sub">Professional enterprise analytics platform. Upload, analyze, visualize, and share your data with AI-powered insights.</p>
+          </div>
+
+          <!-- Upload Zone -->
+          <div id="dropZone" class="dropzone home-dropzone">
+            <input type="file" id="fileInput" accept=".csv,.json,.tsv,.txt,.xlsx,.parquet" hidden multiple />
+            <div class="dropzone-inner">
+              <div class="dropzone-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <p class="dropzone-title">Drop your data files here</p>
+              <p class="dropzone-sub">or <span class="link">browse files</span></p>
+              <p class="dropzone-formats">CSV · JSON · TSV · XLSX · Parquet — up to 5 GB with chunked upload</p>
+            </div>
+          </div>
+          <div id="uploadError" class="upload-error" hidden></div>
+
+          <!-- Quick Stats -->
+          <div class="home-stats" id="homeStats" hidden>
+            <div class="home-stat-card">
+              <div class="home-stat-icon" style="background:rgba(124,156,255,.15);color:var(--accent)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <div class="home-stat-info">
+                <div class="home-stat-val" id="homeDatasetsCount">0</div>
+                <div class="home-stat-label">Datasets</div>
+              </div>
+            </div>
+            <div class="home-stat-card">
+              <div class="home-stat-icon" style="background:rgba(86,217,161,.15);color:var(--green)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </div>
+              <div class="home-stat-info">
+                <div class="home-stat-val" id="homeDashboardsCount">0</div>
+                <div class="home-stat-label">Dashboards</div>
+              </div>
+            </div>
+            <div class="home-stat-card">
+              <div class="home-stat-icon" style="background:rgba(240,163,94,.15);color:var(--orange)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/></svg>
+              </div>
+              <div class="home-stat-info">
+                <div class="home-stat-val" id="homeInsightsCount">0</div>
+                <div class="home-stat-label">AI Insights</div>
+              </div>
+            </div>
+            <div class="home-stat-card">
+              <div class="home-stat-icon" style="background:rgba(224,108,156,.15);color:var(--pink)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="home-stat-info">
+                <div class="home-stat-val" id="homeSessionsCount">0</div>
+                <div class="home-stat-label">Sessions</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="home-section" id="homeRecentSection" hidden>
+            <h2 class="home-section-title">Recent Activity</h2>
+            <div class="home-recent-grid" id="homeRecentGrid"></div>
+          </div>
+
+          <!-- Features Grid -->
+          <div class="home-section">
+            <h2 class="home-section-title">Capabilities</h2>
+            <div class="home-features-grid">
+              <div class="home-feature-card">
+                <div class="home-feature-icon" style="background:rgba(124,156,255,.12);color:var(--accent)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                </div>
+                <h3>Multi-Dataset Workspace</h3>
+                <p>Upload and manage multiple datasets. Merge, join, and analyze them together.</p>
+              </div>
+              <div class="home-feature-card">
+                <div class="home-feature-icon" style="background:rgba(86,217,161,.12);color:var(--green)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <h3>Interactive Visualizations</h3>
+                <p>28+ chart types with smart suggestions and AI-powered recommendations.</p>
+              </div>
+              <div class="home-feature-card">
+                <div class="home-feature-icon" style="background:rgba(240,163,94,.12);color:var(--orange)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/></svg>
+                </div>
+                <h3>AI-Powered Insights</h3>
+                <p>Automated data quality analysis, anomaly detection, and business recommendations.</p>
+              </div>
+              <div class="home-feature-card">
+                <div class="home-feature-icon" style="background:rgba(224,108,156,.12);color:var(--pink)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </div>
+                <h3>Dashboard Builder</h3>
+                <p>Drag-and-drop dashboard creation with templates and presentation mode.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PROJECTS VIEW ========== -->
+      <div class="view" id="view-projects">
+        <div class="projects-header">
+          <h2>Projects</h2>
+          <button id="createProjectBtn" class="btn btn-primary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Project
+          </button>
+        </div>
+        <div class="projects-grid" id="projectsList">
+          <div class="projects-empty">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <p>No projects yet. Create your first project to organize datasets and dashboards.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PROJECT HOME VIEW ========== -->
+      <div class="view" id="view-project-home">
+        <div class="project-home-container" id="projectHomeContent">
+          <div class="project-home-header">
+            <h2>Project</h2>
+            <p class="project-home-desc">Select a project from the Projects list to view its details.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== WORKSPACE VIEW ========== -->
+      <div class="view" id="view-workspace">
+        <div class="workspace-header">
+          <h2>Workspace</h2>
+          <div class="workspace-actions">
+            <button id="wsUploadBtn" class="btn btn-primary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Upload Dataset
+            </button>
+          </div>
+        </div>
+        <div class="workspace-content">
+          <div class="workspace-datasets" id="wsDatasets">
+            <div class="workspace-empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              <p>No datasets yet. Upload a file to get started.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== DATASETS VIEW ========== -->
+      <div class="view" id="view-datasets">
+        <div class="datasets-header">
+          <h2>Datasets</h2>
+          <div class="datasets-actions">
+            <input type="text" id="dsSearchInput" class="ds-search" placeholder="Search datasets..." />
+          </div>
+        </div>
+        <div class="datasets-grid" id="datasetsGrid">
+          <div class="workspace-empty">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            <p>No datasets uploaded yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== MERGE CENTER VIEW ========== -->
+      <div class="view" id="view-merge">
+        <div class="merge-header">
+          <h2>Merge Center</h2>
+          <p class="merge-sub">Combine multiple datasets using joins, unions, and appends.</p>
+        </div>
+        <div class="merge-content">
+          <div class="merge-select-row">
+            <div class="merge-select-group">
+              <label>Left Dataset</label>
+              <select id="mergeLeftDs" class="merge-select"></select>
+            </div>
+            <div class="merge-type-group">
+              <label>Join Type</label>
+              <select id="mergeType" class="merge-select">
+                <option value="inner">Inner Join</option>
+                <option value="left">Left Join</option>
+                <option value="right">Right Join</option>
+                <option value="outer">Outer Join</option>
+                <option value="cross">Cross Join</option>
+                <option value="union">Union (Append)</option>
+              </select>
+            </div>
+            <div class="merge-select-group">
+              <label>Right Dataset</label>
+              <select id="mergeRightDs" class="merge-select"></select>
+            </div>
+          </div>
+          <div class="merge-keys-row" id="mergeKeysRow">
+            <div class="merge-key-group">
+              <label>Join Key (Left)</label>
+              <select id="mergeKeyLeft" class="merge-select"></select>
+            </div>
+            <div class="merge-key-group">
+              <label>Join Key (Right)</label>
+              <select id="mergeKeyRight" class="merge-select"></select>
+            </div>
+          </div>
+          <div class="merge-actions">
+            <button id="btnMergePreview" class="btn btn-ghost btn-sm">Preview</button>
+            <button id="btnMergeExecute" class="btn btn-primary btn-sm">Merge Datasets</button>
+          </div>
+          <div id="mergePreviewContainer" class="merge-preview">
+            <div class="workspace-empty">
+              <p>Select datasets and click Preview to see the merge result.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ANALYSIS VIEWS (old data view panels) ========== -->
+      <div class="view" id="view-preview">
+        <div class="content-header">
+          <div class="file-info">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span id="filenameLabel">file.csv</span>
+            <span id="rowsLabel" class="badge"></span>
+          </div>
+          <div class="content-actions">
+            <div class="download-group">
+              <button id="downloadCsv" class="btn btn-ghost btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV
+              </button>
+              <button id="downloadJson" class="btn btn-ghost btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                JSON
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="preview-split">
+          <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+              <h2 class="sidebar-title">Data Profile</h2>
+              <button id="sidebarToggleInner" class="icon-btn" title="Collapse">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
+            <div class="profile-summary" id="profileSummary"></div>
+            <div class="profile-columns" id="profileColumns"></div>
+          </aside>
+          <section class="content">
+            <div class="table-wrap">
+              <table class="data-table" id="dataTable"></table>
+            </div>
+            <p class="table-note" id="tableNote"></p>
+          </section>
+        </div>
+      </div>
+
+      <div class="view" id="view-charts">
+        <div class="charts-layout">
+          <div class="chart-suggestions" id="chartSuggestions"></div>
+          <div class="chart-main">
+            <div class="chart-main-header">
+              <h3 id="chartTitle">Select a chart</h3>
+              <div class="chart-controls">
+                <label class="select-label">
+                  Type
+                  <select id="chartTypeSelect">
+                    <option value="histogram">Histogram</option>
+                    <option value="scatter">Scatter</option>
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="box">Box</option>
+                    <option value="pie">Pie</option>
+                  </select>
+                </label>
+                <label class="select-label" id="xAxisWrap">
+                  X
+                  <select id="xAxisSelect"></select>
+                </label>
+                <label class="select-label" id="yAxisWrap">
+                  Y
+                  <select id="yAxisSelect"></select>
+                </label>
+                <label class="select-label" id="colorWrap">
+                  Color
+                  <select id="colorSelect"></select>
+                </label>
+                <button id="renderChartBtn" class="btn btn-primary btn-sm">Render</button>
+              </div>
+            </div>
+            <div id="chartContainer" class="chart-container">
+              <div class="chart-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <p>Choose a suggestion or configure a chart above</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-clean">
+        <div class="clean-grid">
+          <div class="clean-card">
+            <div class="clean-card-icon c1">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0l3-3m-3 3L9 5"/><path d="M5 12h14M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/></svg>
+            </div>
+            <h3>Fill Nulls</h3>
+            <p>Replace missing values with a computed fill value.</p>
+            <div class="clean-options">
+              <select id="fillStrategy">
+                <option value="mean">Mean (numeric)</option>
+                <option value="median">Median (numeric)</option>
+                <option value="mode">Mode (all types)</option>
+              </select>
+              <select id="fillColumns">
+                <option value="">All columns</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-sm clean-action" data-action="fill_nulls">Fill Nulls</button>
+          </div>
+          <div class="clean-card">
+            <div class="clean-card-icon c2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="13" height="13" rx="2"/><path d="M18 7l3 3-3 3M8 6v8M8 14h7"/></svg>
+            </div>
+            <h3>Drop Duplicates</h3>
+            <p>Remove fully duplicate rows from the dataset.</p>
+            <div class="clean-stat" id="dupStat"></div>
+            <button class="btn btn-primary btn-sm clean-action" data-action="drop_duplicates">Drop Duplicates</button>
+          </div>
+          <div class="clean-card">
+            <div class="clean-card-icon c3">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </div>
+            <h3>Strip Whitespace</h3>
+            <p>Trim leading/trailing spaces from text columns.</p>
+            <button class="btn btn-primary btn-sm clean-action" data-action="strip_whitespace">Strip Whitespace</button>
+          </div>
+          <div class="clean-card">
+            <div class="clean-card-icon c4">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+            </div>
+            <h3>Drop Null Rows</h3>
+            <p>Remove any row containing null values.</p>
+            <button class="btn btn-primary btn-sm clean-action" data-action="drop_nulls">Drop Null Rows</button>
+          </div>
+          <div class="clean-card danger-card">
+            <div class="clean-card-icon c-danger">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            </div>
+            <h3>Reset to Original</h3>
+            <p>Undo all cleaning and restore the uploaded data.</p>
+            <button class="btn btn-danger btn-sm clean-action" data-action="reset">Reset Data</button>
+          </div>
+        </div>
+        <div class="clean-history" id="cleanHistory" hidden>
+          <h4>Actions applied</h4>
+          <div id="historyList"></div>
+        </div>
+      </div>
+
+      <div class="view" id="view-report">
+        <div id="reportContainer" class="report-container">
+          <div class="report-placeholder">
+            <div class="loader-spinner"></div>
+            <p>Generating quality report...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-correlation">
+        <div id="correlationContainer" class="corr-container">
+          <div class="report-placeholder">
+            <div class="loader-spinner"></div>
+            <p>Generating correlation analysis...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-distribution">
+        <div id="distributionContainer" class="dist-container">
+          <div class="report-placeholder">
+            <div class="loader-spinner"></div>
+            <p>Generating distribution analysis...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-eda-report">
+        <div class="eda-controls">
+          <div class="eda-controls-row">
+            <div class="eda-control-group">
+              <label>Report Type</label>
+              <select id="edaReportType" class="eda-select">
+                <option value="full">Full Report</option>
+                <option value="quick">Quick Overview</option>
+                <option value="technical">Technical Deep-Dive</option>
+                <option value="business">Business Summary</option>
+                <option value="executive">Executive Summary</option>
+              </select>
+            </div>
+            <div class="eda-control-group">
+              <label>Report Title</label>
+              <input type="text" id="edaReportTitle" class="eda-input" placeholder="My EDA Report">
+            </div>
+            <div class="eda-control-group">
+              <label>Author</label>
+              <input type="text" id="edaReportAuthor" class="eda-input" placeholder="Data Analyst">
+            </div>
+            <div class="eda-actions">
+              <button id="btnGenerateEda" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Generate Report
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="edaReportContainer" class="eda-container">
+          <div class="report-placeholder">
+            <div class="loader-spinner"></div>
+            <p>Select a report type and click Generate to create your EDA report.</p>
+          </div>
+        </div>
+        <div class="eda-export-bar" id="edaExportBar" hidden>
+          <span class="eda-export-label">Export as:</span>
+          <button class="btn btn-sm" data-export="html">HTML</button>
+          <button class="btn btn-sm" data-export="json">JSON</button>
+          <button class="btn btn-sm" data-export="markdown">Markdown</button>
+          <button class="btn btn-sm" data-export="excel">Excel</button>
+        </div>
+      </div>
+
+      <div class="view" id="view-ai-insights">
+        <div class="ai-controls">
+          <div class="ai-controls-row">
+            <div class="ai-control-group">
+              <label>Context (optional)</label>
+              <input type="text" id="aiInsightContext" class="ai-input" placeholder="e.g. Focus on revenue trends and customer segments">
+            </div>
+            <div class="ai-actions">
+              <button id="btnGenerateInsights" class="btn btn-primary ai-generate-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/></svg>
+                Generate AI Insights
+              </button>
+              <button id="btnRefreshInsights" class="btn" hidden>Refresh</button>
+            </div>
+          </div>
+        </div>
+        <div class="ai-filter-bar" id="aiFilterBar" hidden>
+          <div class="ai-search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="aiInsightSearch" class="ai-search" placeholder="Search insights...">
+          </div>
+          <div class="ai-filter-chips" id="aiFilterChips">
+            <button class="ai-chip active" data-filter="all">All</button>
+            <button class="ai-chip" data-filter="critical">Critical</button>
+            <button class="ai-chip" data-filter="high">High</button>
+            <button class="ai-chip" data-filter="medium">Medium</button>
+            <button class="ai-chip" data-filter="low">Low</button>
+          </div>
+          <div class="ai-filter-categories" id="aiFilterCategories">
+            <button class="ai-cat-chip active" data-cat="all">All</button>
+            <button class="ai-cat-chip" data-cat="business">Business</button>
+            <button class="ai-cat-chip" data-cat="quality">Quality</button>
+            <button class="ai-cat-chip" data-cat="correlation">Correlation</button>
+            <button class="ai-cat-chip" data-cat="outlier">Outlier</button>
+            <button class="ai-cat-chip" data-cat="kpi">KPI</button>
+            <button class="ai-cat-chip" data-cat="ml">ML</button>
+            <button class="ai-cat-chip" data-cat="risk">Risk</button>
+          </div>
+        </div>
+        <div id="aiInsightsContainer" class="ai-container">
+          <div class="report-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <p>Click "Generate AI Insights" to analyze your dataset with AI.</p>
+          </div>
+        </div>
+        <div class="ai-export-bar" id="aiExportBar" hidden>
+          <span class="ai-export-label">Export as:</span>
+          <button class="btn btn-sm" data-export="markdown">Markdown</button>
+          <button class="btn btn-sm" data-export="html">HTML</button>
+          <button class="btn btn-sm" data-export="json">JSON</button>
+          <button class="btn btn-sm" data-export="csv">CSV</button>
+        </div>
+      </div>
+
+      <div class="view" id="view-ask-data">
+        <div class="ask-controls">
+          <div class="ask-input-wrap">
+            <input type="text" id="askInput" class="ask-input" placeholder="Ask a question about your data...">
+            <button id="btnAsk" class="btn btn-primary">Ask</button>
+          </div>
+          <div class="ask-suggestions" id="askSuggestions"></div>
+        </div>
+        <div id="askResultContainer" class="ai-container">
+          <div class="report-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <p>Ask a question like "What is the average salary?" or "Top 10 customers"</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-features">
+        <div class="fe-controls">
+          <div class="fe-section">
+            <h3>Encoding</h3>
+            <div class="fe-row">
+              <select id="feEncodeColumns" multiple class="fe-select"></select>
+              <select id="feEncodeMethod" class="fe-select">
+                <option value="onehot">One-Hot Encoding</option>
+                <option value="label">Label Encoding</option>
+                <option value="ordinal">Ordinal Encoding</option>
+                <option value="frequency">Frequency Encoding</option>
+              </select>
+              <button id="btnFeEncode" class="btn btn-primary btn-sm">Encode</button>
+            </div>
+          </div>
+          <div class="fe-section">
+            <h3>Scaling</h3>
+            <div class="fe-row">
+              <select id="feScaleColumns" multiple class="fe-select"></select>
+              <select id="feScaleMethod" class="fe-select">
+                <option value="standard">StandardScaler</option>
+                <option value="minmax">MinMaxScaler</option>
+                <option value="robust">RobustScaler</option>
+              </select>
+              <button id="btnFeScale" class="btn btn-primary btn-sm">Scale</button>
+            </div>
+          </div>
+          <div class="fe-section">
+            <h3>Transform</h3>
+            <div class="fe-row">
+              <select id="feTransformColumns" multiple class="fe-select"></select>
+              <select id="feTransformMethod" class="fe-select">
+                <option value="log">Log Transform</option>
+                <option value="sqrt">Square Root</option>
+                <option value="power">Power Transform</option>
+              </select>
+              <button id="btnFeTransform" class="btn btn-primary btn-sm">Transform</button>
+            </div>
+          </div>
+          <div class="fe-section">
+            <h3>Create Features</h3>
+            <div class="fe-row">
+              <select id="feCreateOp" class="fe-select">
+                <option value="date_features">Date Features</option>
+                <option value="polynomial">Polynomial Features</option>
+                <option value="interactions">Interaction Features</option>
+                <option value="binning">Binning</option>
+                <option value="missing_indicator">Missing Indicators</option>
+              </select>
+              <select id="feCreateColumns" multiple class="fe-select"></select>
+              <button id="btnFeCreate" class="btn btn-primary btn-sm">Create</button>
+            </div>
+          </div>
+          <div class="fe-recommendations" id="feRecommendations"></div>
+        </div>
+        <div id="fePreviewContainer" class="ai-container">
+          <div class="report-placeholder"><p>Feature engineering results will appear here.</p></div>
+        </div>
+      </div>
+
+      <div class="view" id="view-stats">
+        <div class="stats-controls">
+          <div class="stats-section">
+            <h3>Descriptive Statistics</h3>
+            <div class="stats-row">
+              <select id="statsColumn" class="fe-select"></select>
+              <button id="btnStatsDesc" class="btn btn-primary btn-sm">Analyze</button>
+            </div>
+            <div id="statsDescResult"></div>
+          </div>
+          <div class="stats-section">
+            <h3>Normality Tests</h3>
+            <div class="stats-row">
+              <select id="statsNormalityCol" class="fe-select"></select>
+              <button id="btnStatsNormality" class="btn btn-primary btn-sm">Test</button>
+            </div>
+            <div id="statsNormalityResult"></div>
+          </div>
+          <div class="stats-section">
+            <h3>Hypothesis Testing</h3>
+            <div class="stats-row">
+              <select id="statsTestType" class="fe-select">
+                <option value="ttest">T-Test (2 groups)</option>
+                <option value="anova">ANOVA (3+ groups)</option>
+                <option value="chi-square">Chi-Square (categorical)</option>
+                <option value="correlation">Correlation Test</option>
+              </select>
+              <select id="statsColA" class="fe-select"></select>
+              <select id="statsColB" class="fe-select"></select>
+              <button id="btnStatsTest" class="btn btn-primary btn-sm">Run Test</button>
+            </div>
+            <div id="statsTestResult"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-tools">
+        <div class="tools-grid">
+          <div class="tool-card">
+            <h3>SQL Generator</h3>
+            <p>Generate SQL queries from natural language.</p>
+            <div class="tool-row">
+              <select id="sqlDialect" class="fe-select">
+                <option value="MySQL">MySQL</option>
+                <option value="PostgreSQL">PostgreSQL</option>
+                <option value="SQLite">SQLite</option>
+                <option value="SQL Server">SQL Server</option>
+                <option value="Oracle">Oracle</option>
+              </select>
+            </div>
+            <div class="tool-row">
+              <input type="text" id="sqlQuestion" class="ask-input" placeholder="e.g. Show top 10 customers by revenue">
+              <button id="btnGenerateSQL" class="btn btn-primary btn-sm">Generate</button>
+            </div>
+            <div id="sqlResult" class="tool-result"></div>
+          </div>
+          <div class="tool-card">
+            <h3>Python Code Generator</h3>
+            <p>Generate production-ready Pandas code.</p>
+            <div class="tool-row">
+              <input type="text" id="codeQuestion" class="ask-input" placeholder="e.g. Calculate monthly revenue growth rate">
+              <button id="btnGenerateCode" class="btn btn-primary btn-sm">Generate</button>
+            </div>
+            <div id="codeResult" class="tool-result"></div>
+          </div>
+          <div class="tool-card">
+            <h3>AI Chart Advisor</h3>
+            <p>Get smart chart recommendations for your data.</p>
+            <button id="btnChartAdvisor" class="btn btn-primary btn-sm">Get Recommendations</button>
+            <div id="chartAdvisorResult" class="tool-result"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="view-dashboard">
+        <!-- Dashboard toolbar -->
+        <div class="dash-toolbar">
+          <div class="dash-toolbar-left">
+            <button id="dashNew" class="btn btn-ghost btn-sm" title="New Dashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New
+            </button>
+            <button id="dashSave" class="btn btn-ghost btn-sm" title="Save Dashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save
+            </button>
+            <button id="dashLoad" class="btn btn-ghost btn-sm" title="Load Dashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+              Load
+            </button>
+            <button id="dashDuplicate" class="btn btn-ghost btn-sm" title="Duplicate Dashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Duplicate
+            </button>
+            <span class="dash-separator"></span>
+            <button id="dashUndo" class="btn btn-ghost btn-sm" title="Undo (Ctrl+Z)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            </button>
+            <button id="dashRedo" class="btn btn-ghost btn-sm" title="Redo (Ctrl+Y)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.13-9.36L23 10"/></svg>
+            </button>
+          </div>
+          <div class="dash-toolbar-center">
+            <input type="text" id="dashTitle" class="dash-title-input" value="Untitled Dashboard" placeholder="Dashboard Title">
+          </div>
+          <div class="dash-toolbar-right">
+            <select id="dashPageSelect" class="dash-page-select">
+              <option value="0">Page 1</option>
+            </select>
+            <button id="dashAddPage" class="btn btn-ghost btn-sm" title="Add Page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Page
+            </button>
+            <span class="dash-separator"></span>
+            <button id="dashAIGenerate" class="btn btn-primary btn-sm" title="AI Auto-Generate Dashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/></svg>
+              AI Generate
+            </button>
+            <select id="dashTemplate" class="dash-template-select">
+              <option value="">Template...</option>
+              <option value="sales">Sales</option>
+              <option value="finance">Finance</option>
+              <option value="hr">HR</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="retail">Retail</option>
+              <option value="inventory">Inventory</option>
+              <option value="marketing">Marketing</option>
+              <option value="education">Education</option>
+              <option value="manufacturing">Manufacturing</option>
+            </select>
+            <span class="dash-separator"></span>
+            <button id="dashFullscreen" class="btn btn-ghost btn-sm" title="Fullscreen (F11)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+            </button>
+            <button id="dashPresent" class="btn btn-ghost btn-sm" title="Presentation Mode">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <select id="dashExport" class="dash-export-select">
+              <option value="">Export...</option>
+              <option value="pdf">PDF</option>
+              <option value="png">PNG</option>
+              <option value="svg">SVG</option>
+              <option value="html">HTML</option>
+              <option value="json">JSON</option>
+              <option value="csv">CSV</option>
+            </select>
+          </div>
+        </div>
+        <!-- Dashboard main area -->
+        <div class="dash-workspace">
+          <div class="dash-sidebar" id="dashSidebar">
+            <div class="dash-sidebar-section">
+              <h4>Add Widget</h4>
+              <div class="dash-widget-palette">
+                <div class="dash-widget-type" data-type="bar" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="10" width="4" height="11" rx="1"/><rect x="10" y="4" width="4" height="17" rx="1"/><rect x="17" y="14" width="4" height="7" rx="1"/></svg><span>Bar</span></div>
+                <div class="dash-widget-type" data-type="stacked_bar" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="10" width="4" height="11" rx="1"/><rect x="3" y="5" width="4" height="5" rx="1" opacity=".4"/><rect x="10" y="4" width="4" height="17" rx="1"/></svg><span>Stacked Bar</span></div>
+                <div class="dash-widget-type" data-type="horizontal_bar" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="11" height="4" rx="1"/><rect x="3" y="12" width="16" height="4" rx="1"/></svg><span>H-Bar</span></div>
+                <div class="dash-widget-type" data-type="grouped_bar" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="3" height="13" rx="1"/><rect x="7" y="11" width="3" height="10" rx="1"/><rect x="13" y="6" width="3" height="15" rx="1"/><rect x="17" y="10" width="3" height="11" rx="1"/></svg><span>Grouped</span></div>
+                <div class="dash-widget-type" data-type="line" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 8 11 13 14 21 5"/></svg><span>Line</span></div>
+                <div class="dash-widget-type" data-type="area" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-6 5 4 8-10v12H3z" fill="currentColor" opacity=".2"/><polyline points="3 17 8 11 13 15 21 5"/></svg><span>Area</span></div>
+                <div class="dash-widget-type" data-type="spline" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17C6 11 10 20 14 12S18 8 21 5" stroke-linecap="round"/></svg><span>Spline</span></div>
+                <div class="dash-widget-type" data-type="pie" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1010 10h-10z" fill="currentColor" opacity=".2"/><line x1="12" y1="2" x2="12" y2="12"/></svg><span>Pie</span></div>
+                <div class="dash-widget-type" data-type="donut" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/></svg><span>Donut</span></div>
+                <div class="dash-widget-type" data-type="scatter" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="18" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="15" cy="14" r="2"/><circle cx="19" cy="6" r="2"/></svg><span>Scatter</span></div>
+                <div class="dash-widget-type" data-type="bubble" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="14" r="4"/><circle cx="16" cy="8" r="3"/><circle cx="14" cy="18" r="2"/></svg><span>Bubble</span></div>
+                <div class="dash-widget-type" data-type="histogram" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="14" width="3" height="7" rx="1"/><rect x="7" y="8" width="3" height="13" rx="1"/><rect x="11" y="4" width="3" height="17" rx="1"/><rect x="15" y="10" width="3" height="11" rx="1"/><rect x="19" y="12" width="3" height="9" rx="1"/></svg><span>Histogram</span></div>
+                <div class="dash-widget-type" data-type="heatmap" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" fill="currentColor" opacity=".3"/><rect x="13" y="3" width="8" height="8" fill="currentColor" opacity=".6"/><rect x="3" y="13" width="8" height="8" fill="currentColor" opacity=".7"/><rect x="13" y="13" width="8" height="8" fill="currentColor" opacity=".2"/></svg><span>Heatmap</span></div>
+                <div class="dash-widget-type" data-type="treemap" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="3" y="3" width="11" height="10" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="8" width="7" height="5" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/><rect x="10" y="13" width="11" height="8" rx="1"/></svg><span>Treemap</span></div>
+                <div class="dash-widget-type" data-type="sunburst" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Sunburst</span></div>
+                <div class="dash-widget-type" data-type="box" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="8" width="6" height="8" rx="1"/><line x1="8" y1="4" x2="8" y2="8"/><line x1="8" y1="16" x2="8" y2="20"/></svg><span>Box</span></div>
+                <div class="dash-widget-type" data-type="violin" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2C4 6 4 18 8 22M16 2C20 6 20 18 16 22M8 6h8"/></svg><span>Violin</span></div>
+                <div class="dash-widget-type" data-type="radar" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,8.5 19,19.5 5,19.5 2,8.5" fill="currentColor" opacity=".15"/><polygon points="12,7 17,10.5 15.5,16 8.5,16 7,10.5" fill="currentColor" opacity=".2"/></svg><span>Radar</span></div>
+                <div class="dash-widget-type" data-type="waterfall" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="3" height="5" fill="currentColor" opacity=".4"/><rect x="7" y="8" width="3" height="9" fill="currentColor" opacity=".6"/><rect x="11" y="10" width="3" height="7" fill="currentColor" opacity=".3"/><rect x="15" y="6" width="3" height="11" fill="currentColor" opacity=".5"/><rect x="19" y="4" width="3" height="13" fill="currentColor" opacity=".7"/></svg><span>Waterfall</span></div>
+                <div class="dash-widget-type" data-type="funnel" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3,4 21,4 16,12 16,20 8,20 8,12" fill="currentColor" opacity=".15"/></svg><span>Funnel</span></div>
+                <div class="dash-widget-type" data-type="gauge" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18A10 10 0 0120 18"/><line x1="12" y1="18" x2="12" y2="10"/></svg><span>Gauge</span></div>
+                <div class="dash-widget-type" data-type="kpi" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><span>KPI Card</span></div>
+                <div class="dash-widget-type" data-type="data_table" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg><span>Table</span></div>
+                <div class="dash-widget-type" data-type="correlation_heatmap" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 3l18 18" stroke-dasharray="2"/></svg><span>Correlation</span></div>
+                <div class="dash-widget-type" data-type="time_series" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 7 13 11 15 15 9 21 5"/><line x1="3" y1="21" x2="21" y2="21"/></svg><span>Time Series</span></div>
+                <div class="dash-widget-type" data-type="forecast" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 7 13 11 15 15 9" stroke-dasharray="0"/><polyline points="15 9 21 5" stroke-dasharray="4"/></svg><span>Forecast</span></div>
+                <div class="dash-widget-type" data-type="density" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20 C6 4, 10 4, 12 12 S18 20, 22 8"/><line x1="2" y1="20" x2="22" y2="20" opacity=".3"/></svg><span>Density</span></div>
+                <div class="dash-widget-type" data-type="distribution" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16 Q8 4 12 12 Q16 20 20 8"/><line x1="4" y1="16" x2="20" y2="16" opacity=".3"/></svg><span>Distribution</span></div>
+                <div class="dash-widget-type" data-type="outlier" draggable="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="10" width="12" height="6" rx="1"/><line x1="9" y1="10" x2="9" y2="7"/><line x1="12" y1="10" x2="12" y2="4"/><line x1="15" y1="10" x2="15" y2="8"/><circle cx="12" cy="4" r="1.5" fill="currentColor"/></svg><span>Outlier</span></div>
+              </div>
+            </div>
+            <div class="dash-sidebar-section">
+              <h4>Filters</h4>
+              <div id="dashFilterList" class="dash-filter-list"><p class="dash-empty-text">No filters active</p></div>
+              <button id="dashAddFilter" class="btn btn-ghost btn-sm" style="width:100%">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Add Filter
+              </button>
+            </div>
+            <div class="dash-sidebar-section">
+              <h4>Saved Dashboards</h4>
+              <div id="dashSavedList" class="dash-saved-list"></div>
+            </div>
+          </div>
+          <div class="dash-canvas-wrap" id="dashCanvasWrap">
+            <div class="dash-zoom-controls">
+              <button id="dashZoomOut" class="btn btn-ghost btn-sm" title="Zoom Out">&minus;</button>
+              <span id="dashZoomLevel">100%</span>
+              <button id="dashZoomIn" class="btn btn-ghost btn-sm" title="Zoom In">+</button>
+              <button id="dashZoomFit" class="btn btn-ghost btn-sm" title="Fit to Screen">Fit</button>
+            </div>
+            <div class="dash-canvas" id="dashCanvas">
+              <div class="dash-drop-zone" id="dashDropZone">
+                <div class="dash-placeholder-text">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                  <p>Drag widgets here or click AI Generate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Dashboard modals -->
+        <div id="dashLoadModal" class="dash-modal" hidden>
+          <div class="dash-modal-content">
+            <div class="dash-modal-header"><h3>Load Dashboard</h3><button class="dash-modal-close" data-close="dashLoadModal">&times;</button></div>
+            <div id="dashLoadList" class="dash-load-list"></div>
+          </div>
+        </div>
+        <div id="dashWidgetConfigModal" class="dash-modal" hidden>
+          <div class="dash-modal-content dash-modal-wide">
+            <div class="dash-modal-header"><h3>Configure Widget</h3><button class="dash-modal-close" data-close="dashWidgetConfigModal">&times;</button></div>
+            <div class="dash-config-form" id="dashConfigForm">
+              <label>Title<input type="text" id="dashWidgetTitle" class="dash-config-input"></label>
+              <label>Chart Type
+                <select id="dashWidgetType" class="dash-config-select">
+                  <option value="bar">Bar</option><option value="stacked_bar">Stacked Bar</option><option value="horizontal_bar">Horizontal Bar</option><option value="grouped_bar">Grouped Bar</option><option value="line">Line</option><option value="area">Area</option><option value="spline">Spline</option><option value="pie">Pie</option><option value="donut">Donut</option><option value="scatter">Scatter</option><option value="bubble">Bubble</option><option value="histogram">Histogram</option><option value="heatmap">Heatmap</option><option value="treemap">Treemap</option><option value="sunburst">Sunburst</option><option value="box">Box Plot</option><option value="violin">Violin Plot</option><option value="density">Density Plot</option><option value="radar">Radar Chart</option><option value="waterfall">Waterfall</option><option value="funnel">Funnel</option><option value="gauge">Gauge</option><option value="kpi">KPI Card</option><option value="data_table">Data Table</option><option value="correlation_heatmap">Correlation Heatmap</option><option value="time_series">Time Series</option><option value="forecast">Forecast</option><option value="distribution">Distribution</option><option value="outlier">Outlier Chart</option>
+                </select>
+              </label>
+              <label>X Axis<select id="dashWidgetX" class="dash-config-select"></select></label>
+              <label>Y Axis<select id="dashWidgetY" class="dash-config-select"></select></label>
+              <label>Color<select id="dashWidgetColor" class="dash-config-select"><option value="">None</option></select></label>
+              <label>Aggregation<select id="dashWidgetAgg" class="dash-config-select"><option value="mean">Mean</option><option value="sum">Sum</option><option value="count">Count</option><option value="median">Median</option><option value="min">Min</option><option value="max">Max</option></select></label>
+              <div class="dash-config-actions">
+                <button id="dashConfigApply" class="btn btn-primary btn-sm">Apply</button>
+                <button id="dashConfigCancel" class="btn btn-ghost btn-sm" data-close="dashWidgetConfigModal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="dashFilterModal" class="dash-modal" hidden>
+          <div class="dash-modal-content">
+            <div class="dash-modal-header"><h3>Add Filter</h3><button class="dash-modal-close" data-close="dashFilterModal">&times;</button></div>
+            <div class="dash-config-form">
+              <label>Column<select id="dashFilterCol" class="dash-config-select"></select></label>
+              <label>Operator<select id="dashFilterOp" class="dash-config-select"><option value="eq">Equals</option><option value="neq">Not Equals</option><option value="gt">Greater Than</option><option value="gte">Greater or Equal</option><option value="lt">Less Than</option><option value="lte">Less or Equal</option><option value="contains">Contains</option></select></label>
+              <label>Value<input type="text" id="dashFilterVal" class="dash-config-input" placeholder="Filter value"></label>
+              <div class="dash-config-actions">
+                <button id="dashFilterApply" class="btn btn-primary btn-sm">Add Filter</button>
+                <button class="btn btn-ghost btn-sm" data-close="dashFilterModal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="dashContextMenu" class="dash-context-menu" hidden>
+          <button data-action="configure">Configure</button>
+          <button data-action="duplicate">Duplicate</button>
+          <button data-action="insight">AI Insight</button>
+          <button data-action="copy">Copy</button>
+          <button data-action="paste">Paste</button>
+          <hr>
+          <button data-action="delete" class="danger">Delete</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===================== Floating AI Assistant ===================== -->
+  <div class="ai-fab" id="aiFab" title="AI Assistant">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6v2H9v-2c-2-1-4-3-4-6a7 7 0 017-7z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+  </div>
+  <div class="ai-assistant-panel" id="aiAssistantPanel" hidden>
+    <div class="ai-assistant-header">
+      <h3>AI Assistant</h3>
+      <button id="aiAssistantClose" class="icon-btn">&times;</button>
+    </div>
+    <div class="ai-assistant-body" id="aiAssistantBody">
+      <div class="ai-assistant-welcome">
+        <p>Hi! I can help you analyze your data. Try asking:</p>
+        <div class="ai-assistant-suggestions">
+          <button class="ai-assist-sug" data-q="Explain this dataset">Explain this dataset</button>
+          <button class="ai-assist-sug" data-q="Find anomalies in the data">Find anomalies</button>
+          <button class="ai-assist-sug" data-q="Generate a dashboard">Generate dashboard</button>
+          <button class="ai-assist-sug" data-q="What are the key insights?">Key insights</button>
+          <button class="ai-assist-sug" data-q="Generate SQL for top customers">Generate SQL</button>
+          <button class="ai-assist-sug" data-q="Create a cleaning report">Cleaning report</button>
+        </div>
+      </div>
+    </div>
+    <div class="ai-assistant-input-wrap">
+      <input type="text" id="aiAssistantInput" class="ai-assistant-input" placeholder="Ask anything about your data...">
+      <button id="aiAssistantSend" class="btn btn-primary btn-sm">Send</button>
+    </div>
+  </div>
+
+  <!-- ===================== Create Project Modal ===================== -->
+  <div class="search-modal" id="createProjectModal" hidden>
+    <div class="search-modal-content">
+      <div class="search-modal-input-wrap">
+        <h3 style="margin:0;flex:1">Create New Project</h3>
+        <button class="modal-close btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+      </div>
+      <form id="createProjectForm" style="padding:16px">
+        <div style="margin-bottom:12px">
+          <label for="projectName" style="display:block;margin-bottom:4px;font-size:13px;color:var(--text-secondary)">Project Name</label>
+          <input type="text" id="projectName" class="search-modal-input" style="width:100%;padding:8px 12px" placeholder="My Analysis Project" required>
+        </div>
+        <div style="margin-bottom:16px">
+          <label for="projectDesc" style="display:block;margin-bottom:4px;font-size:13px;color:var(--text-secondary)">Description (optional)</label>
+          <textarea id="projectDesc" class="search-modal-input" style="width:100%;padding:8px 12px;min-height:60px;resize:vertical" placeholder="Describe the purpose of this project..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Create Project</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== Global Search Modal ===================== -->
+  <div class="search-modal" id="searchModal" hidden>
+    <div class="search-modal-content">
+      <div class="search-modal-input-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchModalInput" class="search-modal-input" placeholder="Search datasets, columns, charts, reports..." autofocus>
+        <kbd>Esc</kbd>
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="search-empty">Type to search across your workspace</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== Loading overlay ===================== -->
+  <div id="loader" class="loader" hidden>
+    <div class="loader-spinner"></div>
+    <p id="loaderText">Processing...</p>
+  </div>
+
+  <!-- ===================== Toast ===================== -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="app.js?v=1.0.1"></script>
+</body>
+</html>
